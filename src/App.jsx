@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { ProtectedRoute, PublicRoute } from '@/components/shared/ProtectedRoute';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { useAuthStore } from '@/stores/authStore';
 import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import ResidentsPage from '@/pages/ResidentsPage';
@@ -9,6 +11,7 @@ import BuildingsPage from '@/pages/BuildingsPage';
 import FloorsPage from '@/pages/FloorsPage';
 import RoomsPage from '@/pages/RoomsPage';
 import BedsPage from '@/pages/BedsPage';
+import PropertyPage from '@/pages/PropertyPage';
 import RentPage from '@/pages/RentPage';
 import ComplaintsPage from '@/pages/ComplaintsPage';
 import StaffPage from '@/pages/StaffPage';
@@ -31,6 +34,11 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
+  // Check session on page load — auto-logout after 12h
+  useEffect(() => {
+    useAuthStore.getState().checkSession();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -42,10 +50,12 @@ export default function App() {
             <Route element={<DashboardLayout />}>
               <Route index element={<DashboardPage />} />
               <Route path="residents" element={<ResidentsPage />} />
-              <Route path="buildings" element={<BuildingsPage />} />
-              <Route path="floors" element={<FloorsPage />} />
-              <Route path="rooms" element={<RoomsPage />} />
-              <Route path="beds" element={<BedsPage />} />
+              <Route path="property" element={<PropertyPage />} />
+              <Route path="buildings" element={<PropertyPage />} />
+              <Route path="floors" element={<PropertyPage />} />
+              <Route path="rooms" element={<PropertyPage />} />
+              <Route path="beds" element={<PropertyPage />} />
+              <Route path="bed-map" element={<BedMapPage />} />
               <Route path="rent" element={<RentPage />} />
               <Route path="complaints" element={<ComplaintsPage />} />
               <Route path="staff" element={<StaffPage />} />

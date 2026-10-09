@@ -31,8 +31,8 @@ export default function FinancePage() {
         <div className="grid gap-4 md:grid-cols-4 mb-8">
           <StatCard title="Total Income" value={formatCurrency(dashboard?.totalIncome)} icon={TrendingUp} />
           <StatCard title="Total Expenses" value={formatCurrency(dashboard?.totalExpenses)} icon={TrendingDown} />
-          <StatCard title="Net Balance" value={formatCurrency(dashboard?.netBalance)} />
-          <StatCard title="This Month" value={formatCurrency(dashboard?.monthlyIncome)} subtitle={`Expenses: ${formatCurrency(dashboard?.monthlyExpenses)}`} />
+          <StatCard title="Profit" value={formatCurrency(dashboard?.profit)} />
+          <StatCard title="Pending Rent" value={formatCurrency(dashboard?.pendingRent)} />
         </div>
       )}
       <div className="grid gap-6 lg:grid-cols-2">

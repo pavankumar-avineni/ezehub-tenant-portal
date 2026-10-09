@@ -44,6 +44,49 @@ export default function SubscriptionPage() {
   const invoices = data?.invoices || [];
   const pendingInvoice = invoices.find(i => i.status === 'PENDING');
 
+  const handleRazorpayPayment = async (invoice) => {
+    try {
+      // Create order on backend
+      const { data: orderData } = await api.post('/payment/subscription/create-order', { invoiceId: invoice.id });
+      const order = orderData.data;
+
+      // Open Razorpay checkout
+      const options = {
+        key: order.keyId,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'EzeHub',
+        description: `Subscription - ${invoice.plan} Plan`,
+        order_id: order.orderId,
+        handler: async (response) => {
+          // Verify payment on backend
+          try {
+            await api.post('/payment/subscription/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              invoiceId: invoice.id,
+            });
+            queryClient.invalidateQueries({ queryKey: ['my-subscription'] });
+            alert('Payment successful! Subscription extended.');
+          } catch (err) {
+            alert('Payment verification failed. Contact support.');
+          }
+        },
+        prefill: {
+          name: data?.tenant?.name || '',
+          email: data?.tenant?.email || '',
+        },
+        theme: { color: '#2563eb' },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to initiate payment');
+    }
+  };
+
   return (
     <div>
       <PageHeader title="Subscription" description="Manage your plan and billing" />
@@ -111,8 +154,11 @@ export default function SubscriptionPage() {
                 <p className="text-xs text-slate-500">Billing Period</p>
                 <p className="text-sm font-semibold text-slate-800 dark:text-white">{formatDate(pendingInvoice.billingStart)} → {formatDate(pendingInvoice.billingEnd)}</p>
               </div>
-              <Button className="w-full h-12 text-base" onClick={() => { setSelectedInvoice(pendingInvoice); setPayDialog(true); }}>
-                <Upload className="h-4 w-4" /> I've Paid — Submit Proof
+              <Button className="w-full h-12 text-base bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700" onClick={() => handleRazorpayPayment(pendingInvoice)}>
+                <CreditCard className="h-4 w-4" /> Pay Online (Razorpay)
+              </Button>
+              <Button variant="outline" className="w-full h-10 text-sm" onClick={() => { setSelectedInvoice(pendingInvoice); setPayDialog(true); }}>
+                <Upload className="h-4 w-4" /> Or Submit UPI Proof Manually
               </Button>
             </div>
 

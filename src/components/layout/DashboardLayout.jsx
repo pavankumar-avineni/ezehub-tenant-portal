@@ -12,28 +12,25 @@ import api from '@/lib/api';
 import { useState, useEffect } from 'react';
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/residents', icon: Users, label: 'Residents' },
-  { to: '/buildings', icon: Building2, label: 'Buildings' },
-  { to: '/floors', icon: ChevronLeft, label: 'Floors' },
-  { to: '/rooms', icon: DoorOpen, label: 'Rooms' },
-  { to: '/beds', icon: Bed, label: 'Beds' },
-  { to: '/rent', icon: IndianRupee, label: 'Rent & Payments' },
-  { to: '/complaints', icon: MessageSquare, label: 'Complaints' },
-  { to: '/staff', icon: UserCog, label: 'Staff' },
-  { to: '/finance', icon: Wallet, label: 'Finance' },
-  { to: '/visitors', icon: UserCheck, label: 'Visitors' },
-  { to: '/inventory', icon: Package, label: 'Inventory' },
-  { to: '/maintenance', icon: Wrench, label: 'Maintenance' },
-  { to: '/documents', icon: FileText, label: 'Documents' },
-  { to: '/notifications', icon: Bell, label: 'Notifications' },
-  { to: '/subscription', icon: CreditCard, label: 'Subscription' },
-  { to: '/payment-settings', icon: Settings, label: 'Payment Settings' },
-  { to: '/discounts', icon: Percent, label: 'Discounts' },
-  { to: '/promotions', icon: Megaphone, label: 'Promotions' },
-  { to: '/food-menu', icon: UtensilsCrossed, label: 'Food Menu' },
-  { to: '/roles', icon: Shield, label: 'Roles' },
-  { to: '/bed-map', icon: Map, label: 'Bed Map' },
+  { to: '/', icon: LayoutDashboard, label: 'Dashboard', permission: null },
+  { to: '/residents', icon: Users, label: 'Residents', permission: 'residents:read' },
+  { to: '/property', icon: Building2, label: 'Property', permission: 'buildings:read' },
+  { to: '/rent', icon: IndianRupee, label: 'Rent & Payments', permission: 'rent:manage' },
+  { to: '/complaints', icon: MessageSquare, label: 'Complaints', permission: 'complaints:read' },
+  { to: '/staff', icon: UserCog, label: 'Staff', permission: 'staff:manage' },
+  { to: '/finance', icon: Wallet, label: 'Finance', permission: 'finance:read' },
+  { to: '/visitors', icon: UserCheck, label: 'Visitors', permission: 'visitors:manage' },
+  { to: '/inventory', icon: Package, label: 'Inventory', permission: 'inventory:manage' },
+  { to: '/maintenance', icon: Wrench, label: 'Maintenance', permission: 'maintenance:manage' },
+  { to: '/documents', icon: FileText, label: 'Documents', permission: 'documents:manage' },
+  { to: '/notifications', icon: Bell, label: 'Notifications', permission: null },
+  { to: '/subscription', icon: CreditCard, label: 'Subscription', permission: null },
+  { to: '/payment-settings', icon: Settings, label: 'Payment Settings', permission: null },
+  { to: '/discounts', icon: Percent, label: 'Discounts', permission: null },
+  { to: '/promotions', icon: Megaphone, label: 'Promotions', permission: null },
+  { to: '/food-menu', icon: UtensilsCrossed, label: 'Food Menu', permission: null },
+  { to: '/roles', icon: Shield, label: 'Roles', permission: 'staff:manage' },
+  { to: '/bed-map', icon: Map, label: 'Bed Map', permission: 'beds:manage' },
 ];
 
 export function DashboardLayout() {
@@ -70,7 +67,11 @@ export function DashboardLayout() {
         </div>
         
         <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
-          {navItems.map(({ to, icon: Icon, label }) => (
+          {navItems.filter(({ permission }) => {
+            if (!permission) return true; // no permission needed
+            const userPerms = user?.permissions || [];
+            return userPerms.includes(permission);
+          }).map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}

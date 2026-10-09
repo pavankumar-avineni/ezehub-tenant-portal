@@ -17,6 +17,8 @@ export default function PaymentSettingsPage() {
     paymentIfscCode: '',
     paymentAccountHolder: '',
     paymentInstructions: '',
+    razorpayKeyId: '',
+    razorpayKeySecret: '',
   });
 
   const { data, isLoading } = useQuery({
@@ -34,6 +36,8 @@ export default function PaymentSettingsPage() {
         paymentIfscCode: data.paymentIfscCode || '',
         paymentAccountHolder: data.paymentAccountHolder || '',
         paymentInstructions: data.paymentInstructions || '',
+        razorpayKeyId: data.razorpayKeyId || '',
+        razorpayKeySecret: data.razorpayKeySecret || '',
       });
     }
   }, [data]);
@@ -127,6 +131,33 @@ export default function PaymentSettingsPage() {
               placeholder="Pay using any UPI app (GPay, PhonePe, Paytm) and submit proof in the app. Include your name in the payment note."
             />
           </div>
+        </div>
+
+        {/* Razorpay Section */}
+        <div className="glass-card p-6 md:col-span-2 border-2 border-blue-200/50 dark:border-blue-800/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <CreditCard className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-slate-800 dark:text-white">Razorpay Gateway</h3>
+              <p className="text-xs text-slate-500">Enable online payments — residents pay directly to your account via UPI, Card, Net Banking</p>
+            </div>
+            {data?.razorpayConfigured && <span className="ml-auto text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">✓ Active</span>}
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label>Razorpay Key ID</Label>
+              <Input value={form.razorpayKeyId} onChange={handleChange('razorpayKeyId')} placeholder="rzp_live_xxxxxxxxxx" />
+              <p className="text-xs text-slate-400 mt-1">From Razorpay Dashboard → API Keys</p>
+            </div>
+            <div>
+              <Label>Razorpay Key Secret</Label>
+              <Input type="password" value={form.razorpayKeySecret} onChange={handleChange('razorpayKeySecret')} placeholder="Enter key secret" />
+              <p className="text-xs text-slate-400 mt-1">Keep this confidential — never share</p>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 mt-4">When configured, residents can pay rent directly through Razorpay checkout (UPI, Cards, Net Banking, Wallets). Money goes to your Razorpay account.</p>
         </div>
       </div>
 

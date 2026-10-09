@@ -92,50 +92,7 @@ export default function ComplaintsPage() {
 
   return (
     <div>
-      <PageHeader title="Complaints" description="Track and resolve resident issues" actions={
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4" /> New Complaint</Button></DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Log Complaint</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Building</Label>
-                  <select className="flex h-10 w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all" value={form.buildingId} onChange={(e) => setForm({ ...form, buildingId: e.target.value })}>
-                    <option value="">Select building</option>
-                    {(buildings || []).map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                  </select>
-                  {errors.buildingId && <p className="text-sm text-red-500">{errors.buildingId}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label>Resident</Label>
-                  <select className="flex h-10 w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all" value={form.residentId} onChange={(e) => setForm({ ...form, residentId: e.target.value })}>
-                    <option value="">Select resident</option>
-                    {(residents || []).map((r) => <option key={r.id} value={r.id}>{r.firstName} {r.lastName}</option>)}
-                  </select>
-                  {errors.residentId && <p className="text-sm text-red-500">{errors.residentId}</p>}
-                </div>
-              </div>
-              <div className="space-y-2"><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Brief summary of the issue" />{errors.title && <p className="text-sm text-red-500">{errors.title}</p>}</div>
-              <div className="space-y-2"><Label>Description</Label><textarea className="flex min-h-[80px] w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Describe the issue in detail (min 10 characters)" />{errors.description && <p className="text-sm text-red-500">{errors.description}</p>}</div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Category</Label>
-                  <select className="flex h-10 w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-                    {['MAINTENANCE', 'CLEANLINESS', 'FOOD', 'SECURITY', 'NOISE', 'OTHER'].map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div className="space-y-2"><Label>Priority</Label>
-                  <select className="flex h-10 w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all" value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })}>
-                    {['LOW', 'MEDIUM', 'HIGH', 'URGENT'].map((p) => <option key={p} value={p}>{p}</option>)}
-                  </select>
-                </div>
-              </div>
-              {createMutation.error && Object.keys(errors).length === 0 && <p className="text-sm text-red-500">{createMutation.error.response?.data?.message || 'Failed to create complaint'}</p>}
-              <DialogFooter><Button type="submit" disabled={createMutation.isPending}>Submit</Button></DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      } />
+      <PageHeader title="Complaints" description="Track and resolve resident issues" />
       <div className="glass-card overflow-hidden">
         <Table>
           <TableHeader><TableRow><TableHead>Title</TableHead><TableHead>Category</TableHead><TableHead>Priority</TableHead><TableHead>Status</TableHead><TableHead>Created</TableHead></TableRow></TableHeader>

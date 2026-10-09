@@ -161,6 +161,11 @@ export default function StaffPage() {
                   <div><span className="text-xs text-slate-500">Salary</span><p className="text-sm font-medium">{formatCurrency(detailData.salary)}</p></div>
                   <div><span className="text-xs text-slate-500">Has Login</span><p className="text-sm font-medium">{detailData.tenantUserId ? '✅ Yes' : '❌ No'}</p></div>
                 </div>
+                <div className="flex gap-2 pt-3 border-t">
+                  <Button variant="destructive" size="sm" onClick={() => { if (confirm('Delete this staff member?')) { api.delete(`/tenant/staff/${selectedId}`).then(() => { queryClient.invalidateQueries({ queryKey: ['staff'] }); setDetailOpen(false); }); } }}>
+                    Delete Staff
+                  </Button>
+                </div>
               </div>
             )}
         </DialogContent>

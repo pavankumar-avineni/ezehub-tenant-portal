@@ -25,7 +25,7 @@ export default function InventoryPage() {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [detailOpen, setDetailOpen] = useState(false);
-  const [form, setForm] = useState({ buildingId: '', name: '', category: '', uniqueCode: '', condition: 'NEW', purchasePrice: '' });
+  const [form, setForm] = useState({ buildingId: '', name: '', category: '', uniqueCode: '', condition: 'NEW', purchasePrice: '', purchaseDate: '' });
   const queryClient = useQueryClient();
 
   const { data: buildings } = useQuery({
@@ -46,7 +46,7 @@ export default function InventoryPage() {
 
   const createMutation = useMutation({
     mutationFn: (payload) => api.post('/tenant/inventory', payload),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['inventory'] }); setOpen(false); setForm({ buildingId: '', name: '', category: '', uniqueCode: '', condition: 'NEW', purchasePrice: '' }); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['inventory'] }); setOpen(false); setForm({ buildingId: '', name: '', category: '', uniqueCode: '', condition: 'NEW', purchasePrice: '', purchaseDate: '' }); },
   });
 
   const items = data?.data || [];
@@ -73,7 +73,12 @@ export default function InventoryPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2"><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
-                <div className="space-y-2"><Label>Category</Label><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required /></div>
+                <div className="space-y-2"><Label>Category</Label>
+                  <select className="flex h-10 w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required>
+                    <option value="">Select category</option>
+                    {['FURNITURE', 'ELECTRONICS', 'KITCHEN', 'BEDDING', 'BATHROOM', 'CLEANING', 'ELECTRICAL', 'PLUMBING', 'SAFETY', 'OFFICE', 'OTHER'].map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
                 <div className="space-y-2"><Label>Unique Code</Label><Input value={form.uniqueCode} onChange={(e) => setForm({ ...form, uniqueCode: e.target.value })} required /></div>
                 <div className="space-y-2"><Label>Condition</Label>
                   <select className="flex h-10 w-full rounded-xl border border-blue-200/50 dark:border-blue-800/30 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/40 transition-all" value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })}>
